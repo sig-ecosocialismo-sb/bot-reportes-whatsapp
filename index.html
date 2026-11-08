@@ -576,18 +576,18 @@ body.panel-open .credit{opacity:0}
     },
     {
       id: 'aves_locales', name: 'Aves locales', short: 'Aves locales', tag: 'Fauna · Residentes',
-      sci: 'Ardea cocoi y otras aves residentes', kind: 'live',
+      sci: 'Ardea alba y otras aves residentes', kind: 'live',
       anchor: 'garza', pos: [-3, 1.2, -1], cam: [2.9, 1.8, 4.3],
-      lead: 'La garza morena, dueña de las aguas someras.',
-      text: 'Las aves residentes viven todo el año en el humedal. La más visible es la <b>garza morena</b> (Ardea cocoi), la mayor de Sudamérica: caza inmóvil y lanza el cuello como un arpón. La <b>garza blanca</b> (Ardea alba), en cambio, es la más común en el municipio Simón Bolívar: se la ve en casi cualquier orilla, acechando peces en aguas someras con el cuello en forma de ese. Con ellas conviven el <b>corocoro</b> (Eudocimus ruber), el pato real, el gallito de agua o jacana y los martines pescadores.',
+      lead: 'La garza blanca, el ave más común en las orillas del humedal.',
+      text: 'Las aves residentes viven todo el año en el humedal. La <b>garza blanca</b> (Ardea alba) es la más común en el municipio Simón Bolívar: se la ve en casi cualquier orilla, acechando peces en aguas someras con el cuello en forma de ese. La <b>garza morena</b> (Ardea cocoi), la mayor de Sudamérica, es más solitaria: caza inmóvil y lanza el cuello como un arpón. Con ellas conviven el <b>corocoro</b> (Eudocimus ruber), el pato real, el gallito de agua o jacana y los martines pescadores.',
       secLabel: 'Papel en el ecosistema',
       funcs: [
         'Controlan poblaciones de peces, anfibios e insectos.',
         'Anidan en árboles y juncos cercanos al agua.',
         'Son bioindicadoras: si escasean, algo pasa con el humedal.'
       ],
-      stats: [{ k: 'Ejemplos', v: 'Garza morena, corocoro, jacana' }, { k: 'Residencia', v: 'Todo el año' }],
-      fact: 'La garza morena puede quedarse completamente inmóvil más de diez minutos antes de lanzar el golpe.'
+      stats: [{ k: 'Ejemplos', v: 'Garza blanca, corocoro, jacana' }, { k: 'Residencia', v: 'Todo el año' }],
+      fact: 'La garza blanca pesca con paciencia de relojero: mantiene el cuello en «ese» sin moverse y lo dispara como una daga cuando pasa el pez. La garza morena, más grande y solitaria, hace lo mismo pero con un golpe aún más largo.'
     },
     {
       id: 'aves_migratorias', name: 'Aves migratorias', short: 'Aves migratorias', tag: 'Fauna · Migratorias',
@@ -633,6 +633,21 @@ body.panel-open .credit{opacity:0}
       ],
       stats: [{ k: 'Ejemplos', v: 'Rana trepadora, sapo común' }, { k: 'Piel', v: 'Permeable, muy sensible' }],
       fact: 'Los renacuajos detectan sustancias químicas de sus depredadores y cambian de forma para esconderse.'
+    },
+    {
+      id: 'reptiles', name: 'Reptiles', short: 'Reptiles', tag: 'Fauna · Reptiles',
+      sci: 'Caiman crocodilus · Iguana iguana · Boa constrictor', kind: 'live',
+      anchor: 'reptiles', pos: [-6.4, 0.22, 3.2], cam: [1.55, 0.8, 2.1],
+      lead: 'La baba y sus vecinos: los reptiles que reinan en el barro.',
+      text: 'Los reptiles son los animales que mejor aguantan el vaivén del humedal: pasan del agua al barro y del barro al sol sin problema, porque regulan su temperatura con el ambiente. En los caños, ciénagas y morichales del municipio Simón Bolívar el más abundante es la <b>baba</b> (Caiman crocodilus), el caimán pequeño que asoma solo los ojos y el lomo: los adultos rara vez pasan de dos metros, así que no es un peligro para las personas. Junto a ella viven la <b>iguana verde</b> (Iguana iguana), que duerme en las ramas del mangle y se zambulle al primer ruido; el <b>mato</b> (Tupinambis teguixin), el lagarto más grande de Venezuela, que recorre las orillas secas y come huevos, insectos y carroña; el <b>galápago</b> (Rhinoclemmys punctularia), tortuga de agua que se entierra en el lodo; el <b>morrocoy</b> (Chelonoidis carbonarius) en los bordes arenosos y el monte seco vecino; y varias <b>culebras de agua</b> (Helicops angulatus y especies parecidas), inofensivas, que cazan peces y renacuajos. La <b>tragavenados</b> (Boa constrictor) también baja desde el monte seco a beber y a cazar roedores entre los juncos.',
+      secLabel: 'Adaptaciones y papel ecológico',
+      funcs: [
+        'Controlan poblaciones: babas y culebras comen peces, cangrejos y renacuajos; matos y tragavenados, insectos, huevos y roedores.',
+        'Termorregulan al sol: necesitan el calor del barro y de las ramas para activar su metabolismo y digerir.',
+        'Sus nidos, huevos y crías son alimento de garzas, mapaches, zorros y otras aves del humedal.'
+      ],
+      stats: [{ k: 'Ejemplos', v: 'Baba, iguana, mato, galápago' }, { k: 'Grupo', v: 'Cocodrilios, escamosos y quelonios' }],
+      fact: 'En la sequía la baba y el galápago se entierran en el barro y bajan su metabolismo: pueden pasar semanas sin comer, esperando la primera lluvia.'
     }
   ];
 
@@ -1458,15 +1473,23 @@ body.panel-open .credit{opacity:0}
     }
   })();
 
-  /* ---- 6f. aves acuáticas residentes ---- */
-  function makeHeron(x, z, rot, scale) {
+  /* ---- 6f. aves acuáticas residentes ----
+     plumaje: 'blanca' = garza blanca (Ardea alba, la más común aquí)
+              'morena' = garza morena (Ardea cocoi, gris con corona negra) */
+  function makeHeron(x, z, rot, scale, plumaje) {
     const g = new T.Group();
-    const white = new T.MeshStandardMaterial({ color: 0xe4e6dd, roughness: 0.8 });
-    const grey = new T.MeshStandardMaterial({ color: 0x93a1a9, roughness: 0.85, flatShading: true });
-    const greyDark = new T.MeshStandardMaterial({ color: 0x6d7c86, roughness: 0.88, flatShading: true });
-    const yellow = new T.MeshStandardMaterial({ color: 0xdfae3c, roughness: 0.55 });
+    const blanca = plumaje !== 'morena';
+    const white = new T.MeshStandardMaterial({ color: blanca ? 0xf7f8f3 : 0xe4e6dd, roughness: 0.78 });
+    const grey = new T.MeshStandardMaterial(blanca
+      ? { color: 0xf2f4ee, roughness: 0.8 }
+      : { color: 0x93a1a9, roughness: 0.85, flatShading: true });
+    const greyDark = new T.MeshStandardMaterial(blanca
+      ? { color: 0xe6e9df, roughness: 0.82 }
+      : { color: 0x6d7c86, roughness: 0.88, flatShading: true });
+    const yellow = new T.MeshStandardMaterial({ color: blanca ? 0xe9b62f : 0xdfae3c, roughness: 0.55 });
     const dark = new T.MeshStandardMaterial({ color: 0x25262a, roughness: 0.8 });
-    const legM = new T.MeshStandardMaterial({ color: 0x3b3a34, roughness: 0.85 });
+    const legM = new T.MeshStandardMaterial({ color: blanca ? 0x1b1c1f : 0x3b3a34, roughness: 0.85 });
+    const crownM = blanca ? white : dark;   // la blanca no tiene corona negra
 
     /* patas largas y finas, con articulación y dedos */
     [-1, 1].forEach((sd) => {
@@ -1529,7 +1552,7 @@ body.panel-open .credit{opacity:0}
     head.scale.set(1, 0.92, 1.25);
     head.position.set(0, 1.575, 0.26);
     g.add(head);
-    const crown = new T.Mesh(new T.SphereGeometry(0.066, 10, 8, 0, 6.283, 0, 1.9), dark);
+    const crown = new T.Mesh(new T.SphereGeometry(0.066, 10, 8, 0, 6.283, 0, 1.9), crownM);
     crown.scale.set(1, 0.9, 1.2);
     crown.position.set(0, 1.6, 0.25);
     g.add(crown);
@@ -1588,14 +1611,22 @@ body.panel-open .credit{opacity:0}
 
   const garzaPos = (function () {
     const sp = FAUNA.garza;
-    makeHeron(sp.x, sp.z, -0.85, 1.15);
+    /* esta es la garza que representa a "Aves locales": al tocarla se abre la ficha
+       y su foto es la de la garza blanca */
+    makeHeron(sp.x, sp.z, -0.85, 1.15, 'blanca');
     ANCHOR.garza = [sp.x, heightAt(sp.x, sp.z) + 1.25, sp.z];
     return sp;
   })();
-  makeHeron(6.8, -2.4, -0.4, 0.95);
+  makeHeron(6.8, -2.4, -0.4, 0.95, 'blanca');
   (function () {
     const sp = findSpot(3.6, 4.6, (h) => h < -0.5);
-    makeHeron(sp.x, sp.z, -2.3, 0.85);
+    makeHeron(sp.x, sp.z, -2.3, 0.85, 'blanca');
+  })();
+  /* la única garza morena que queda: al fondo, lejos de los puntos
+     seleccionables, así que no se puede tocar para abrir una descripción */
+  (function () {
+    const sp = findSpot(-12.5, 7.5, (h) => h > -0.55 && h < 0.12);
+    if (Math.abs(sp.x) < 13.6 && Math.abs(sp.z) < 8.8) makeHeron(sp.x, sp.z, 2.4, 0.8, 'morena');
   })();
 
   const patoPos = (function () {
@@ -2266,6 +2297,95 @@ body.panel-open .credit{opacity:0}
     elDock.scrollLeft = 0;
   }
 
+  /* ---- 6g. la baba (Caiman crocodilus): caimán pequeño del humedal ---- */
+  /* La baba: cuerpo bajo y ancho apoyado en el barro, hocico corto y ancho,
+     cola comprimida. Formas suaves (sin púas) para que no se vea "de bloques". */
+  function makeBaba(x, z, rot, scale) {
+    const g = new T.Group();
+    const skin = new T.MeshStandardMaterial({ color: 0x6d7050, roughness: 0.92, metalness: 0.0 });
+    const dark = new T.MeshStandardMaterial({ color: 0x4b5035, roughness: 0.94 });
+    const belly = new T.MeshStandardMaterial({ color: 0xb0ad86, roughness: 0.9 });
+    const bone = new T.MeshStandardMaterial({ color: 0xa09d7c, roughness: 0.8 });
+    const eyeM = new T.MeshStandardMaterial({ color: 0xd9c257, roughness: 0.3, emissive: 0x221d05 });
+
+    const add = (mesh, px, py, pz, sx, sy, sz) => {
+      mesh.position.set(px, py, pz);
+      if (sx !== undefined) mesh.scale.set(sx, sy, sz);
+      mesh.castShadow = true;
+      g.add(mesh);
+      return mesh;
+    };
+    const ball = (r, seg = 14) => new T.Mesh(new T.SphereGeometry(r, seg, Math.round(seg * 0.75)), skin);
+
+    /* tronco: ovalado, bajo y ancho */
+    add(ball(1, 20), 0, 0.165, 0.02, 0.245, 0.155, 0.52);
+    /* dorso más oscuro */
+    add(new T.Mesh(new T.SphereGeometry(1, 18, 12), dark), 0, 0.225, 0.00, 0.145, 0.105, 0.40);
+    /* vientre claro */
+    add(new T.Mesh(new T.SphereGeometry(1, 18, 12), belly), 0, 0.095, 0.02, 0.175, 0.090, 0.42);
+
+    /* cuello y cabeza */
+    add(ball(1, 16), 0, 0.175, 0.40, 0.205, 0.145, 0.17);
+    add(ball(1, 16), 0, 0.180, 0.545, 0.140, 0.095, 0.175);
+
+    /* hocico: cilindro achatado que se afina hacia adelante */
+    const snout = new T.Mesh(new T.CylinderGeometry(0.050, 0.082, 0.33, 12), skin);
+    snout.rotation.x = Math.PI / 2;
+    add(snout, 0, 0.160, 0.755, 1, 1, 0.58);
+    const jaw = new T.Mesh(new T.CylinderGeometry(0.044, 0.072, 0.31, 12), belly);
+    jaw.rotation.x = Math.PI / 2;
+    add(jaw, 0, 0.115, 0.745, 1, 1, 0.34);
+
+    /* ojos saltones con el relieve óseo del "anteojo" */
+    [-1, 1].forEach((sd) => {
+      add(new T.Mesh(new T.SphereGeometry(0.047, 12, 9), bone), 0.066 * sd, 0.243, 0.535, 1, 0.78, 1.05);
+      add(new T.Mesh(new T.SphereGeometry(0.025, 10, 8), eyeM), 0.069 * sd, 0.262, 0.542);
+      add(new T.Mesh(new T.SphereGeometry(0.012, 8, 6), dark), 0.072 * sd, 0.276, 0.550);
+    });
+    /* fosas nasales */
+    [-1, 1].forEach((sd) => {
+      add(new T.Mesh(new T.SphereGeometry(0.015, 8, 6), dark), 0.024 * sd, 0.180, 0.905);
+    });
+
+    /* cola: cadena de esferas que se afinan, comprimida de lado */
+    for (let i = 0; i < 8; i++) {
+      const t = i / 7;
+      const r = 0.225 * Math.pow(1 - t, 1.05) + 0.015;
+      const zz = -0.40 - 0.86 * t;
+      add(ball(1, 14), 0, 0.162 - 0.055 * t, zz, r * 0.58, r * 0.92, r * 1.4);
+      if (i < 6) {  /* cresta baja sobre la cola */
+        add(new T.Mesh(new T.SphereGeometry(1, 10, 8), dark), 0, 0.162 - 0.055 * t + r * 0.80,
+          zz, r * 0.20, r * 0.26, r * 0.55);
+      }
+    }
+
+    /* cuatro patas cortas y abiertas, apoyadas en el barro */
+    [[-1, 0.27], [1, 0.27], [-1, -0.20], [1, -0.20]].forEach(([sd, zz]) => {
+      const up = new T.Mesh(new T.CapsuleGeometry(0.048, 0.11, 3, 8), skin);
+      up.rotation.z = 1.05 * sd;
+      add(up, 0.205 * sd, 0.110, zz);
+      const low = new T.Mesh(new T.CapsuleGeometry(0.034, 0.10, 3, 8), skin);
+      low.rotation.z = 0.35 * sd;
+      add(low, 0.295 * sd, 0.052, zz + 0.01);
+      const foot = new T.Mesh(new T.SphereGeometry(0.052, 10, 8), dark);
+      add(foot, 0.330 * sd, 0.018, zz + 0.03, 1.10, 0.36, 1.30);
+    });
+
+    g.position.set(x, heightAt(x, z) + 0.035, z);
+    g.rotation.y = rot;
+    g.scale.setScalar(scale);
+    scene.add(g);
+    return g;
+  }
+
+  (function () {
+    /* en la orilla, sobre el barro húmedo: ni dentro del agua (no se vería)
+       ni entre la hierba alta, para que se vea desde la vista general */
+    const sp = findSpot(-5.2, 6.4, (h) => h > -0.16 && h < 0.06);
+    makeBaba(sp.x, sp.z, 2.15, 1.15);
+    ANCHOR.reptiles = [sp.x, heightAt(sp.x, sp.z) + 0.45, sp.z];
+  })();
+
   /* anclar cada ficha al modelo 3D correspondiente */
   ALL.forEach((it) => {
     if (it.anchor && ANCHOR[it.anchor]) it.pos = ANCHOR[it.anchor].slice();
@@ -2396,6 +2516,31 @@ body.panel-open .credit{opacity:0}
     'sauces': { src: 'humedal_especies/flora/sauce_ribera_salix_humboldtiana.jpg', name: 'Sauce de ribera', sci: 'Salix humboldtiana' },
     'cangrejo azul': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
     'cangrejos azules': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
+    'baba': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'babas': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'caimán': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'caiman': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'caimanes': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'caimán de anteojos': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'caiman de anteojos': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'cocodrilo de anteojos': { src: 'humedal_especies/fauna/reptiles/baba_caiman_crocodilus.jpg', name: 'Baba', sci: 'Caiman crocodilus' },
+    'iguana verde': { src: 'humedal_especies/fauna/reptiles/iguana_verde_iguana_iguana.jpg', name: 'Iguana verde', sci: 'Iguana iguana' },
+    'iguana': { src: 'humedal_especies/fauna/reptiles/iguana_verde_iguana_iguana.jpg', name: 'Iguana verde', sci: 'Iguana iguana' },
+    'iguanas': { src: 'humedal_especies/fauna/reptiles/iguana_verde_iguana_iguana.jpg', name: 'Iguana verde', sci: 'Iguana iguana' },
+    'mato de agua': { src: 'humedal_especies/fauna/reptiles/mato_tupinambis_teguixin.jpg', name: 'Mato', sci: 'Tupinambis teguixin' },
+    'mato': { src: 'humedal_especies/fauna/reptiles/mato_tupinambis_teguixin.jpg', name: 'Mato', sci: 'Tupinambis teguixin' },
+    'matos': { src: 'humedal_especies/fauna/reptiles/mato_tupinambis_teguixin.jpg', name: 'Mato', sci: 'Tupinambis teguixin' },
+    'galápago': { src: 'humedal_especies/fauna/reptiles/galapago_rhinoclemmys_punctularia.jpg', name: 'Galápago', sci: 'Rhinoclemmys punctularia' },
+    'galapago': { src: 'humedal_especies/fauna/reptiles/galapago_rhinoclemmys_punctularia.jpg', name: 'Galápago', sci: 'Rhinoclemmys punctularia' },
+    'galápagos': { src: 'humedal_especies/fauna/reptiles/galapago_rhinoclemmys_punctularia.jpg', name: 'Galápago', sci: 'Rhinoclemmys punctularia' },
+    'morrocoy': { src: 'humedal_especies/fauna/reptiles/morrocoy_chelonoidis_carbonarius.jpg', name: 'Morrocoy', sci: 'Chelonoidis carbonarius' },
+    'morrocoyes': { src: 'humedal_especies/fauna/reptiles/morrocoy_chelonoidis_carbonarius.jpg', name: 'Morrocoy', sci: 'Chelonoidis carbonarius' },
+    'culebras de agua': { src: 'humedal_especies/fauna/reptiles/culebra_agua_helicops_angulatus.jpg', name: 'Culebra de agua', sci: 'Helicops angulatus' },
+    'culebra de agua': { src: 'humedal_especies/fauna/reptiles/culebra_agua_helicops_angulatus.jpg', name: 'Culebra de agua', sci: 'Helicops angulatus' },
+    'culebra': { src: 'humedal_especies/fauna/reptiles/culebra_agua_helicops_angulatus.jpg', name: 'Culebra de agua', sci: 'Helicops angulatus' },
+    'culebras': { src: 'humedal_especies/fauna/reptiles/culebra_agua_helicops_angulatus.jpg', name: 'Culebra de agua', sci: 'Helicops angulatus' },
+    'tragavenados': { src: 'humedal_especies/fauna/reptiles/tragavenados_boa_constrictor.jpg', name: 'Tragavenados', sci: 'Boa constrictor' },
+    'tragavenado': { src: 'humedal_especies/fauna/reptiles/tragavenados_boa_constrictor.jpg', name: 'Tragavenados', sci: 'Boa constrictor' },
     'cangrejo': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
     'cangrejos': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
     'corocoro': { src: 'humedal_especies/fauna/aves_residentes/corocora_eudocimus_ruber.jpg', name: 'Corocora', sci: 'Eudocimus ruber' },
@@ -2424,12 +2569,14 @@ body.panel-open .credit{opacity:0}
                        'tirra real', 'gaviota de delaware', 'golondrina de río'],
     peces: ['sardina', 'bagre', 'guabina'],
     anfibios: ['rana trepadora', 'sapo común'],
+    reptiles: ['baba', 'iguana verde', 'mato', 'galápago', 'morrocoy', 'culebra de agua', 'tragavenados'],
     fauna: ['garza blanca', 'garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real', 'flamenco del caribe',
             'cotúa olivácea', 'pelícano pardo', 'cigüeñuela cuellinegra', 'guanaguanare',
             'caricare sabanero', 'águila pescadora', 'playero semipalmado', 'playero patilargo',
             'playero coleador', 'chorlito semipalmado', 'pluvial gris', 'tirra real',
             'gaviota de delaware', 'golondrina de río', 'sardina', 'bagre', 'guabina',
-            'rana trepadora', 'sapo común', 'cangrejo azul']
+            'rana trepadora', 'sapo común', 'baba', 'iguana verde', 'mato', 'galápago',
+            'morrocoy', 'culebra de agua', 'tragavenados', 'cangrejo azul']
   };
 
   function spChipsHTML(id) {
@@ -3020,5 +3167,5 @@ body.panel-open .credit{opacity:0}
   setTimeout(() => elHint && elHint.classList.add('off'), 16000);
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5771a296afaa50c',t:'MTc5NDE2NzM3OQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5771a296afaa50c',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a57765c5baf37429',t:'MTc5NDE3MDQ3Ng=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a57765c5baf37429',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
