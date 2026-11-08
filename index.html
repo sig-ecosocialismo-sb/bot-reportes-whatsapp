@@ -579,7 +579,7 @@ body.panel-open .credit{opacity:0}
       sci: 'Ardea cocoi y otras aves residentes', kind: 'live',
       anchor: 'garza', pos: [-3, 1.2, -1], cam: [2.9, 1.8, 4.3],
       lead: 'La garza morena, dueña de las aguas someras.',
-      text: 'Las aves residentes viven todo el año en el humedal. La más visible es la <b>garza morena</b> (Ardea cocoi), la mayor de Sudamérica: caza inmóvil y lanza el cuello como un arpón. Con ella conviven el <b>corocoro</b> (Eudocimus ruber), el pato real, el gallito de agua o jacana y los martines pescadores.',
+      text: 'Las aves residentes viven todo el año en el humedal. La más visible es la <b>garza morena</b> (Ardea cocoi), la mayor de Sudamérica: caza inmóvil y lanza el cuello como un arpón. La <b>garza blanca</b> (Ardea alba), en cambio, es la más común en el municipio Simón Bolívar: se la ve en casi cualquier orilla, acechando peces en aguas someras con el cuello en forma de ese. Con ellas conviven el <b>corocoro</b> (Eudocimus ruber), el pato real, el gallito de agua o jacana y los martines pescadores.',
       secLabel: 'Papel en el ecosistema',
       funcs: [
         'Controlan poblaciones de peces, anfibios e insectos.',
@@ -2324,6 +2324,26 @@ body.panel-open .credit{opacity:0}
     'garza real': { src: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg', name: 'Garza real', sci: 'Ardea alba' },
     'garceta grande': { src: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg', name: 'Garza real', sci: 'Ardea alba' },
     'garza morena': { src: 'humedal_especies/fauna/aves_residentes/garza_morena_ardea_cocoi.jpg', name: 'Garza morena', sci: 'Ardea cocoi' },
+    'garza blanca': {
+      src: 'humedal_especies/fauna/aves_residentes/garza_blanca_ardea_alba.jpg',
+      alt: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg',
+      name: 'Garza blanca', sci: 'Ardea alba'
+    },
+    'garzas blancas': {
+      src: 'humedal_especies/fauna/aves_residentes/garza_blanca_ardea_alba.jpg',
+      alt: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg',
+      name: 'Garza blanca', sci: 'Ardea alba'
+    },
+    'garzón blanco': {
+      src: 'humedal_especies/fauna/aves_residentes/garza_blanca_ardea_alba.jpg',
+      alt: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg',
+      name: 'Garza blanca', sci: 'Ardea alba'
+    },
+    'garzon blanco': {
+      src: 'humedal_especies/fauna/aves_residentes/garza_blanca_ardea_alba.jpg',
+      alt: 'humedal_especies/fauna/aves_residentes/garza_real_ardea_alba.jpg',
+      name: 'Garza blanca', sci: 'Ardea alba'
+    },
     'cotúa olivácea': { src: 'humedal_especies/fauna/aves_residentes/cotua_olivacea_nannopterum_brasilianum.jpg', name: 'Cotúa olivácea', sci: 'Nannopterum brasilianum' },
     'cotua olivacea': { src: 'humedal_especies/fauna/aves_residentes/cotua_olivacea_nannopterum_brasilianum.jpg', name: 'Cotúa olivácea', sci: 'Nannopterum brasilianum' },
     'pato buzo': { src: 'humedal_especies/fauna/aves_residentes/cotua_olivacea_nannopterum_brasilianum.jpg', name: 'Cotúa olivácea', sci: 'Nannopterum brasilianum' },
@@ -2396,7 +2416,7 @@ body.panel-open .credit{opacity:0}
     manglar: ['mangle rojo', 'mangle negro', 'mangle blanco', 'mangle de botón'],
     moriche: ['moriche'],
     ribera_arboles: ['sauce'],
-    aves_locales: ['garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real',
+    aves_locales: ['garza blanca', 'garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real',
                    'flamenco del caribe', 'cotúa olivácea', 'pelícano pardo',
                    'cigüeñuela cuellinegra', 'guanaguanare', 'caricare sabanero'],
     aves_migratorias: ['águila pescadora', 'playero semipalmado', 'playero patilargo',
@@ -2404,7 +2424,7 @@ body.panel-open .credit{opacity:0}
                        'tirra real', 'gaviota de delaware', 'golondrina de río'],
     peces: ['sardina', 'bagre', 'guabina'],
     anfibios: ['rana trepadora', 'sapo común'],
-    fauna: ['garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real', 'flamenco del caribe',
+    fauna: ['garza blanca', 'garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real', 'flamenco del caribe',
             'cotúa olivácea', 'pelícano pardo', 'cigüeñuela cuellinegra', 'guanaguanare',
             'caricare sabanero', 'águila pescadora', 'playero semipalmado', 'playero patilargo',
             'playero coleador', 'chorlito semipalmado', 'pluvial gris', 'tirra real',
@@ -2424,9 +2444,12 @@ body.panel-open .credit{opacity:0}
       const info = SPECIES_IMG[k];
       return `<span class="sp-name" data-sp="${k}">${info.name}</span>`;
     }).join('');
-    return `<div class="p-sub">Especies con foto</div>
+    if (!chips) return '';
+    return `<div class="sp-gal">
+      <div class="p-sub">Especies con foto</div>
       <div class="sp-chips">${chips}</div>
-      <p class="sp-hint">Pasa el puntero (o toca) cada nombre para ver la fotografía.</p>`;
+      <p class="sp-hint">Pasa el puntero (o toca) cada nombre para ver la fotografía.</p>
+    </div>`;
   }
 
   const elSpTip = document.getElementById('spTip');
@@ -2461,7 +2484,8 @@ body.panel-open .credit{opacity:0}
       elSpImg.src = spResolved[info.src];
       return;
     }
-    const c = spCandidates(info.src);
+    let c = spCandidates(info.src);
+    if (info.alt) c = c.concat(spCandidates(info.alt)); // foto de respaldo (misma especie)
     elSpImg.dataset.cands = JSON.stringify(c);
     elSpImg.dataset.ci = '0';
     elSpImg.dataset.orig = info.src;
@@ -2518,6 +2542,9 @@ body.panel-open .credit{opacity:0}
     if (!root) return;
     // Envolver nombres dentro de <b> y también texto plano frecuente
     const keys = Object.keys(SPECIES_IMG).sort((a, b) => b.length - a.length);
+    // una sola vez por especie en cada ficha (nombres repetidos o sinónimos
+    // como "gallito de agua o jacana" ya no muestran la foto dos veces)
+    const yaPuesta = new Set();
     const walk = (node) => {
       if (node.nodeType === 3) { // text
         const raw = node.nodeValue;
@@ -2528,6 +2555,9 @@ body.panel-open .credit{opacity:0}
           const re = new RegExp('(?<![\\wáéíóúñ])(' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![\\wáéíóúñ])', 'gi');
           if (re.test(html)) {
             html = html.replace(re, (m) => {
+              const canon = SPECIES_IMG[k].name;
+              if (yaPuesta.has(canon)) return m;   // ya se puede ver su foto más arriba
+              yaPuesta.add(canon);
               changed = true;
               return '<span class="sp-name" data-sp="' + k.toLowerCase() + '">' + m + '</span>';
             });
@@ -2545,6 +2575,19 @@ body.panel-open .credit{opacity:0}
       }
     };
     walk(root);
+
+    // si la especie ya se puede ver en el texto de la ficha, quitamos su etiqueta
+    // de la lista de abajo; así cada especie aparece una sola vez por ficha
+    root.querySelectorAll('.sp-chips .sp-name').forEach((chip) => {
+      const key = (chip.getAttribute('data-sp') || '').toLowerCase();
+      const info = SPECIES_IMG[key];
+      if (info && yaPuesta.has(info.name)) chip.remove();
+    });
+    root.querySelectorAll('.sp-gal').forEach((box) => {
+      const chips = box.querySelector('.sp-chips');
+      if (!chips || !chips.querySelector('.sp-name')) box.remove();
+    });
+
     root.querySelectorAll('.sp-name').forEach((el) => {
       const key = (el.getAttribute('data-sp') || el.textContent || '').toLowerCase().trim();
       el.addEventListener('mouseenter', () => showSpTip(el, key));
@@ -2977,5 +3020,5 @@ body.panel-open .credit{opacity:0}
   setTimeout(() => elHint && elHint.classList.add('off'), 16000);
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a576fcda1bec4077',t:'MTc5NDE2NjE3OA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a576fcda1bec4077',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5771a296afaa50c',t:'MTc5NDE2NzM3OQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5771a296afaa50c',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
