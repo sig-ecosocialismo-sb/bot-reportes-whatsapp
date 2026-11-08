@@ -160,6 +160,14 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
   #spTip{width:170px}
   #spTip img{height:110px}
 }
+.sp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.sp-chips .sp-name{
+  font-size:11px;line-height:1;padding:6px 9px;border-radius:20px;
+  background:rgba(62,207,174,.08);border:1px solid rgba(127,240,212,.28);
+  border-bottom:1px solid rgba(127,240,212,.28);white-space:nowrap;
+}
+.sp-chips .sp-name:hover{background:rgba(62,207,174,.2);color:#eafff9}
+.sp-hint{font-size:10.5px;color:rgba(247,240,229,.45);margin:0 0 4px;font-style:italic}
 
 
 .p-sub{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(62,207,174,.85);margin:0 0 11px;
@@ -2361,8 +2369,65 @@ body.panel-open .credit{opacity:0}
     'botoncillo': { src: 'humedal_especies/flora/mangle_boton_conocarpus_erectus.jpg', name: 'Mangle de botón', sci: 'Conocarpus erectus' },
     'moriche': { src: 'humedal_especies/flora/moriche_mauritia_flexuosa.jpg', name: 'Moriche', sci: 'Mauritia flexuosa' },
     'enea': { src: 'humedal_especies/flora/enea_typha.jpg', name: 'Enea', sci: 'Typha sp.' },
-    'junco': { src: 'humedal_especies/flora/junco.jpg', name: 'Junco', sci: 'Schoenoplectus / Juncus' }
+    'junco': { src: 'humedal_especies/flora/junco.jpg', name: 'Junco', sci: 'Schoenoplectus / Juncus' },
+
+    // --- añadidos: especies que aparecen en los textos o que ya tenías en fotos ---
+    'sauce': { src: 'humedal_especies/flora/sauce_ribera_salix_humboldtiana.jpg', name: 'Sauce de ribera', sci: 'Salix humboldtiana' },
+    'sauces': { src: 'humedal_especies/flora/sauce_ribera_salix_humboldtiana.jpg', name: 'Sauce de ribera', sci: 'Salix humboldtiana' },
+    'cangrejo azul': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
+    'cangrejos azules': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
+    'cangrejo': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
+    'cangrejos': { src: 'humedal_especies/fauna/invertebrados/cangrejo_azul_cardisoma_guanhumi.jpg', name: 'Cangrejo azul', sci: 'Cardisoma guanhumi' },
+    'corocoro': { src: 'humedal_especies/fauna/aves_residentes/corocora_eudocimus_ruber.jpg', name: 'Corocora', sci: 'Eudocimus ruber' },
+    'gallito de agua': { src: 'humedal_especies/fauna/aves_residentes/jacana_jacana_jacana.jpg', name: 'Jacana', sci: 'Jacana jacana' },
+    'playeros': { src: 'humedal_especies/fauna/aves_migratorias/playero_semipalmado_calidris_pusilla.jpg', name: 'Playero semipalmado', sci: 'Calidris pusilla' },
+    'bagres': { src: 'humedal_especies/fauna/peces/bagre_rhamdia.jpg', name: 'Bagre', sci: 'Rhamdia sp.' },
+    'ranas': { src: 'humedal_especies/fauna/anfibios/rana_trepadora_boana_crepitans.jpg', name: 'Rana trepadora', sci: 'Boana crepitans' },
+    'sapos': { src: 'humedal_especies/fauna/anfibios/sapo_comun_rhinella_marina.jpg', name: 'Sapo común', sci: 'Rhinella marina' }
   };
+
+  /* Fotitos extra: cada ficha muestra al final la lista de especies de su grupo,
+     para que TODAS las fotos que tienes sean alcanzables con el puntero
+     (antes muchas especies no aparecían escritas en ningún texto). */
+  const SP_GROUPS = {
+    emergente: ['enea', 'junco'],
+    sedimento: ['cangrejo azul'],
+    ribera: ['cangrejo azul'],
+    manglar: ['mangle rojo', 'mangle negro', 'mangle blanco', 'mangle de botón'],
+    moriche: ['moriche'],
+    ribera_arboles: ['sauce'],
+    aves_locales: ['garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real',
+                   'flamenco del caribe', 'cotúa olivácea', 'pelícano pardo',
+                   'cigüeñuela cuellinegra', 'guanaguanare', 'caricare sabanero'],
+    aves_migratorias: ['águila pescadora', 'playero semipalmado', 'playero patilargo',
+                       'playero coleador', 'chorlito semipalmado', 'pluvial gris',
+                       'tirra real', 'gaviota de delaware', 'golondrina de río'],
+    peces: ['sardina', 'bagre', 'guabina'],
+    anfibios: ['rana trepadora', 'sapo común'],
+    fauna: ['garza morena', 'corocora', 'jacana', 'garceta nívea', 'garza real', 'flamenco del caribe',
+            'cotúa olivácea', 'pelícano pardo', 'cigüeñuela cuellinegra', 'guanaguanare',
+            'caricare sabanero', 'águila pescadora', 'playero semipalmado', 'playero patilargo',
+            'playero coleador', 'chorlito semipalmado', 'pluvial gris', 'tirra real',
+            'gaviota de delaware', 'golondrina de río', 'sardina', 'bagre', 'guabina',
+            'rana trepadora', 'sapo común', 'cangrejo azul']
+  };
+
+  function spChipsHTML(id) {
+    const keys = SP_GROUPS[id];
+    if (!keys) return '';
+    const seen = {};
+    const chips = keys.filter((k) => {
+      if (!SPECIES_IMG[k] || seen[SPECIES_IMG[k].name]) return false;
+      seen[SPECIES_IMG[k].name] = 1;
+      return true;
+    }).map((k) => {
+      const info = SPECIES_IMG[k];
+      return `<span class="sp-name" data-sp="${k}">${info.name}</span>`;
+    }).join('');
+    return `<div class="p-sub">Especies con foto</div>
+      <div class="sp-chips">${chips}</div>
+      <p class="sp-hint">Pasa el puntero (o toca) cada nombre para ver la fotografía.</p>`;
+  }
 
   const elSpTip = document.getElementById('spTip');
   const elSpImg = elSpTip ? elSpTip.querySelector('img') : null;
@@ -2374,13 +2439,18 @@ body.panel-open .credit{opacity:0}
   const spResolved = {}; // src original -> url que sí cargó
 
   function spCandidates(src) {
-    const base = src.split('/').pop();
+    const parts = src.split('/');
+    const base = parts.pop();
+    const dirs = parts.join('/');
     const c = [];
     const add = (p) => { if (p && c.indexOf(p) === -1) c.push(p); };
-    add(SP_FOTO_BASE + base);                    // foto suelta en la carpeta del index
-    add(base);                                   // misma carpeta, ruta mínima
-    add('humedal_especies/' + base);             // dentro de una carpeta única
-    add(src);                                    // ruta original completa (fauna/..., flora/...)
+    add(SP_FOTO_BASE + base);                     // foto suelta en la carpeta del index
+    add(base);                                    // misma carpeta, ruta mínima
+    add('humedal_especies/' + base);              // dentro de una carpeta única
+    add(src);                                     // ruta original completa
+    // variantes quitando carpetas por delante (p. ej. sin "humedal_especies/")
+    parts.forEach((_, i) => add(parts.slice(i).join('/') + '/' + base));
+    add(SP_FOTO_BASE + (parts[parts.length - 1] || '') + '/' + base);
     return c;
   }
 
@@ -2504,6 +2574,7 @@ body.panel-open .credit{opacity:0}
       <ul class="p-funcs">${it.funcs.map((f) => `<li>${f}</li>`).join('')}</ul>
       <div class="p-stats">${it.stats.map((x) => `<div class="p-stat"><span>${x.k}</span><strong>${x.v}</strong></div>`).join('')}</div>
       <div class="p-fact"><span>Sabías que</span><p>${it.fact}</p></div>
+      ${spChipsHTML(it.id)}
     `;
     elPanelScroll.querySelector('.p-close').addEventListener('click', () => select(-1));
     elPanelScroll.scrollTop = 0;
@@ -2906,5 +2977,5 @@ body.panel-open .credit{opacity:0}
   setTimeout(() => elHint && elHint.classList.add('off'), 16000);
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a576ca314fc803b2',t:'MTc5NDE2NDEwMw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a576ca314fc803b2',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a570e1189a9842fa',t:'MTc5NDEwMjEyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a570e1189a9842fa',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a576fcda1bec4077',t:'MTc5NDE2NjE3OA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a576fcda1bec4077',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
