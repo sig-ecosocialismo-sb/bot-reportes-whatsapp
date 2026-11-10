@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#04100f">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Humedal 3D: diorama interactivo de la anatomía de un humedal costero — agua, vegetación emergente, suelo hidromórfico, raíces, nivel freático, corte estratigráfico, fauna y red trófica.">
@@ -34,7 +34,7 @@
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(--cream);font-family:var(--sans);touch-action:pan-x pan-y}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(--cream);font-family:var(--sans)}
 body{overscroll-behavior:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;user-select:none}
 :focus-visible{outline:2px solid var(--teal-lite);outline-offset:3px;border-radius:6px}
@@ -78,10 +78,10 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 
 /* marcadores 3D ----------------------------------------------------------- */
 #markers{position:fixed;inset:0;z-index:5;pointer-events:none}
-.marker{position:absolute;top:0;left:0;pointer-events:none;display:flex;align-items:center;gap:0;
+.marker{position:absolute;top:0;left:0;pointer-events:auto;display:flex;align-items:center;gap:0;
   opacity:0;transition:opacity .35s ease;will-change:transform;contain:layout style;cursor:pointer;
   padding:0;background:none;border:0}
-.marker.on{opacity:1;pointer-events:auto}
+.marker.on{opacity:1}
 .marker.off{pointer-events:none}
 .marker::before{content:"";position:absolute;inset:-10px;border-radius:50%}
 .marker .dot{position:relative;width:12px;height:12px;flex:none;border-radius:50%;
@@ -188,20 +188,6 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .sp-tip b{display:block;font-size:11.5px;margin-bottom:2px}
 .sp-tip em{display:block;font-style:italic;font-size:10px;color:rgba(168,217,126,.88)}
 .sp-tip .sp-tip-note{display:block;margin-top:6px;font-size:10px;line-height:1.4;color:rgba(247,240,229,.55)}
-
-/* Ficha táctil en el flujo del panel: jamás se superpone al botón de cierre. */
-.sp-mobile-card[hidden],.sp-mobile-card [hidden]{display:none !important}
-.sp-mobile-card{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:10px;
-  border:1px solid rgba(127,240,212,.3);border-radius:14px;background:#0b2928}
-.sp-mobile-card img{width:104px;height:92px;flex:none;object-fit:cover;border-radius:9px;background:#102f2e}
-.sp-mobile-card .sp-mobile-info{flex:1;min-width:0}
-.sp-mobile-card b,.sp-mobile-card em{display:block;overflow-wrap:anywhere}
-.sp-mobile-card b{font-size:14px;line-height:1.3;margin-bottom:4px}
-.sp-mobile-card em{font-size:12px;line-height:1.35;color:#c5e4a8}
-.sp-mobile-card .sp-mobile-note{display:block;margin-top:5px;font-size:11px;line-height:1.35;color:rgba(247,240,229,.75)}
-.sp-mobile-card .sp-mobile-close{align-self:flex-start;flex:none;min-width:40px;min-height:40px;
-  border:1px solid rgba(255,255,255,.18);border-radius:50%;font-size:20px;line-height:1}
-
 
 /* barra de partes --------------------------------------------------------- */
 .dock-wrap{position:fixed;z-index:7;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));
@@ -328,57 +314,6 @@ body.panel-open .hint{opacity:0}
   .p-funcs li{font-size:11.6px}
   .dock-nav{display:none}
 }
-
-/* Teléfono: una ficha compacta que puede ampliarse para leer con comodidad. */
-.panel-size{display:none}
-@media (max-width:700px){
-  :root{--safe-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
-  .hud{padding:calc(8px + env(safe-area-inset-top,0px)) 8px 8px;gap:4px;align-items:center}
-  .brand{gap:5px;flex:none}
-  .brand .mark{width:30px;height:30px}
-  .brand h1{font-size:10px;letter-spacing:.08em}
-  .tools{gap:3px;flex-wrap:nowrap}
-  .tools .btn,.tools .btn-icon{width:40px;min-width:40px;height:40px;padding:0;justify-content:center}
-  .tools .btn svg{width:17px;height:17px}
-  .panel{left:8px;right:8px;bottom:calc(var(--safe-bottom) + 2px);height:40vh;height:40dvh;
-    max-height:calc(100vh - var(--safe-bottom) - 65px);max-height:calc(100dvh - var(--safe-bottom) - 65px);
-    border-radius:18px;background:rgba(6,22,24,.96)}
-  .panel.expanded{height:70vh;height:70dvh}
-  .panel-size{display:flex;flex:none;align-items:center;justify-content:center;gap:9px;min-height:36px;
-    width:100%;color:rgba(247,240,229,.8);font-size:12px;font-weight:600;
-    background:rgba(255,255,255,.035);border-bottom:1px solid var(--stroke-soft)}
-  .panel-grip{width:30px;height:4px;border-radius:99px;background:rgba(247,240,229,.45)}
-  .panel-scroll{flex:1;min-height:0;padding:8px 16px 16px}
-  .p-top{position:sticky;top:-8px;z-index:3;margin:0 -16px 7px;padding:4px 16px;
-    background:#091e1e}
-  .p-close{width:42px;height:42px}
-  .p-kicker{font-size:10px;letter-spacing:.12em}
-  .p-title{font-size:22px;line-height:1.15;margin-bottom:7px;overflow-wrap:anywhere}
-  .p-sci{font-size:13px;line-height:1.4}
-  .p-role{font-size:10px;letter-spacing:.09em;margin-bottom:10px}
-  .p-lead{font-size:15px;line-height:1.45;margin-bottom:12px}
-  .p-text{font-size:15px;line-height:1.58;color:rgba(247,240,229,.93);margin-bottom:18px}
-  .p-sub{font-size:11px;letter-spacing:.14em;margin-bottom:10px}
-  .p-funcs li{font-size:14px;line-height:1.55;color:rgba(247,240,229,.9)}
-  .p-stat span,.p-fact span{font-size:10px;letter-spacing:.09em;color:rgba(247,240,229,.7)}
-  .p-stat strong{font-size:13px;line-height:1.4;overflow-wrap:anywhere}
-  .p-fact p{font-size:14px;line-height:1.55}
-  .sp-chips .sp-name{font-size:13px;line-height:1.3;padding:10px 12px}
-  .sp-hint{font-size:12px}
-  .p-nav{flex:none;padding:3px 8px;gap:4px}
-  .p-nav button{min-height:42px;font-size:12px;padding:6px;max-width:40%}
-  .p-nav .count{font-size:10px;letter-spacing:.06em}
-  .panel::after{bottom:48px;height:24px}
-  .dock-wrap{bottom:calc(9px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 16px)}
-  .dock{padding:5px;mask-image:none;-webkit-mask-image:none;touch-action:pan-x}
-  .chip{min-height:42px;font-size:12px;padding:8px 12px}
-  .sp-tip{width:min(216px,calc(100vw - 20px));font-size:13px}
-}
-@media (max-width:370px){.brand-txt{display:none}}
-@media (max-height:480px) and (max-width:980px){
-  .panel{max-height:calc(100vh - var(--safe-bottom) - 52px);max-height:calc(100dvh - var(--safe-bottom) - 52px)}
-}
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
     transition-duration:.001ms !important;scroll-behavior:auto !important}
@@ -440,7 +375,6 @@ body.panel-open .hint{opacity:0}
 <div id="markers" aria-hidden="false"></div>
 
 <aside class="panel" id="panel" role="dialog" aria-modal="false" aria-labelledby="pTitle" aria-hidden="true">
-  <button class="panel-size" id="panelSize" type="button" aria-expanded="false" aria-controls="panelScroll"><span class="panel-grip" aria-hidden="true"></span><span class="panel-size-label">Ampliar ficha</span></button>
   <div class="panel-scroll" id="panelScroll"></div>
   <div class="p-nav">
     <button id="navPrev" title="Elemento anterior">← Anterior</button>
@@ -600,7 +534,7 @@ const CUT_POS = 10.06;
     },
     {
       id: 'sedimento', name: 'Sedimento orgánico', short: 'Sedimento orgánico', tag: 'Suelo · Capa 1',
-      kind: 'anat', layer: { y0: 0, y1: 0.135 }, pos: [-7.2, -0.32, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
+      kind: 'anat', layer: { y0: 0, y1: 0.135 }, pos: [1.6, -0.32, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
       lead: 'La capa que respira: hojarasca, detritos y biofilm.',
       text: 'Es el primer palmo del humedal. Aquí se mezclan las <b>hojas del mangle rojo</b>, los tallos secos de junco y enea, el plancton muerto y las heces de los peces. En la llanura costera del río Neverí, donde Barcelona está a menos de dos metros sobre el nivel del mar, esta capa está siempre húmeda y la crecida de julio la renueva. Su color pardo verdoso se lo dan millones de bacterias y hongos que la digieren.',
       secLabel: 'Qué contiene y por qué importa',
@@ -614,7 +548,7 @@ const CUT_POS = 10.06;
     },
     {
       id: 'turba', name: 'Turba y lodo anegado', short: 'Turba y lodo', tag: 'Suelo · Capa 2',
-      kind: 'anat', layer: { y0: 0.135, y1: 0.34 }, pos: [-2.4, -1.09, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
+      kind: 'anat', layer: { y0: 0.135, y1: 0.34 }, pos: [1.6, -1.09, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
       lead: 'Materia vegetal que no termina de descomponerse.',
       text: 'Justo debajo del sedimento el agua no deja pasar aire. Sin oxígeno, las bacterias trabajan a medias: la materia vegetal se acumula como <b>turba</b>, un lodo negro, esponjoso y con olor a huevo podrido por el sulfuro. Es el <b>suelo hidromórfico</b> típico de las ciénagas del Neverí: pesado, sin aire y empapado todo el año, incluso en la sequía de marzo.',
       secLabel: 'Qué contiene y por qué importa',
@@ -628,7 +562,7 @@ const CUT_POS = 10.06;
     },
     {
       id: 'arcilla', name: 'Arcilla compacta', short: 'Arcilla', tag: 'Suelo · Capa 3',
-      kind: 'anat', layer: { y0: 0.34, y1: 0.6 }, pos: [2.4, -2.16, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
+      kind: 'anat', layer: { y0: 0.34, y1: 0.6 }, pos: [1.6, -2.16, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
       lead: 'El sello que mantiene el agua adentro.',
       text: 'Son los granos más finos que arrastra el río y que se asientan al final del recorrido, cuando el agua pierde fuerza al llegar a la llanura. Al secarse se aprieta y forma una capa casi impermeable: la <b>arcilla</b> es la que impide que la ciénaga se vacíe hacia el subsuelo. Por eso el agua dulce se queda en la superficie y el nivel freático de Barcelona está a pocos centímetros del suelo.',
       secLabel: 'Qué contiene y por qué importa',
@@ -642,7 +576,7 @@ const CUT_POS = 10.06;
     },
     {
       id: 'roca', name: 'Roca madre', short: 'Roca madre', tag: 'Suelo · Capa 4',
-      kind: 'anat', layer: { y0: 0.6, y1: 1.0 }, pos: [7.2, -3.68, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
+      kind: 'anat', layer: { y0: 0.6, y1: 1.0 }, pos: [1.6, -3.68, CUT_POS], cam: [3.2, 1.15, 14.6], face: true,
       lead: 'El fondo geológico: lo que había antes del humedal.',
       text: 'Debajo de todo está el material que no es suelo: <b>areniscas, calizas y sedimentos marinos</b> antiguos, de cuando esta llanura era fondo de mar. Es la base firme sobre la que se apoyan el lodo y la turba, y el techo del acuífero que alimenta los pozos de la zona. En el oriente de Anzoátegui estos materiales se hunden suavemente hacia la costa, y por eso el humedal es tan plano.',
       secLabel: 'Qué contiene y por qué importa',
@@ -1094,24 +1028,20 @@ async function buildScene(cfg, step) {
     wet.addColorStop(1, 'rgba(6,18,20,0.06)');
     g.fillStyle = wet; g.fillRect(0, 0, cw, ch);
 
-    // Rótulos con mayor tamaño y contraste para que se lean sobre cada estrato.
-    // Se dibujan en la misma textura, sin añadir objetos ni geometría a la escena.
-    const textAt = [0.5];
+    // rótulos de los estratos, integrados en la ilustración
+    const textAt = [0.045, 0.395, 0.745];
     bands.forEach((bd) => {
       const cy = (bd.y0 + bd.y1) * 0.5 * ch;
       textAt.forEach((fx) => {
-        const fontSize = Math.round(40 * k);
-        g.save();
-        g.font = '700 ' + fontSize + 'px -apple-system, "Segoe UI", Roboto, sans-serif';
+        const x = fx * cw;
+        g.font = '600 ' + Math.round(30 * k) + 'px -apple-system, "Segoe UI", Roboto, sans-serif';
+        g.fillStyle = bd.y1 > 0.6 ? 'rgba(255,255,255,0.3)' : 'rgba(255,248,232,0.33)';
         g.textBaseline = 'middle';
-        const width = g.measureText(bd.name).width;
-        const x = fx * cw - width / 2;
-        const padX = 10 * k, padY = 5 * k;
-        g.fillStyle = 'rgba(3,13,13,0.72)';
-        g.fillRect(x - padX, cy - fontSize * 0.54 - padY, width + 2 * padX, fontSize * 1.08 + 2 * padY);
-        g.fillStyle = 'rgba(255,252,240,0.98)';
         g.fillText(bd.name, x, cy);
-        g.restore();
+        const w = g.measureText(bd.name).width;
+        g.strokeStyle = bd.y1 > 0.6 ? 'rgba(255,255,255,0.2)' : 'rgba(255,248,232,0.22)';
+        g.lineWidth = 1.4 * k;
+        g.beginPath(); g.moveTo(x, cy + 22 * k); g.lineTo(x + w, cy + 22 * k); g.stroke();
       });
     });
 
@@ -2718,8 +2648,8 @@ const now = () => (typeof performance !== 'undefined' ? performance.now() : Date
 
 const LEVELS = {
   high:   { shadows: true, shadowSize: 2048, maxDpr: 2.00, aniso: 8, texScale: 1.00, waterSeg: [160, 110], density: 1.00, antialias: true },
-  medium: { shadows: true, shadowSize: 1536, maxDpr: 1.75, aniso: 4, texScale: 0.90, waterSeg: [128, 88],  density: 0.95, antialias: true },
-  low:    { shadows: true, shadowSize: 1024, maxDpr: 1.50, aniso: 2, texScale: 0.78, waterSeg: [104, 72],  density: 0.90, antialias: true }
+  medium: { shadows: true, shadowSize: 1536, maxDpr: 1.60, aniso: 4, texScale: 0.85, waterSeg: [128, 88],  density: 0.95, antialias: true },
+  low:    { shadows: true, shadowSize: 1024, maxDpr: 1.35, aniso: 2, texScale: 0.70, waterSeg: [104, 72],  density: 0.90, antialias: true }
 };
 
 let forcedTier = null;
@@ -3111,12 +3041,9 @@ const ROLE_LABEL = {
   abiotico: 'Componente físico', productor: 'Productor', descomponedor: 'Descomponedor', consumidor: 'Consumidor'
 };
 
-/* Las fotografías del repositorio están en la raíz de GitHub Pages,
-   junto al index. La URL absoluta también funciona al abrir el HTML descargado. */
-const PHOTO_BASE = 'https://sig-ecosocialismo-sb.github.io/bot-reportes-whatsapp/';
-function photoURL(sp) {
-  return PHOTO_BASE + encodeURIComponent(sp.f.split('/').pop());
-}
+/* Catálogo de especies. Si existe la carpeta local `humedal_especies/`, cada
+   ficha muestra su fotografía; si no, se ofrece la ficha científica. */
+const PHOTO_BASE = 'humedal_especies/';
 const SPECIES = [
   { k: 'garza blanca', n: 'Garza blanca', s: 'Ardea alba', g: 'aves_locales', f: 'ave_residentes/garza_blanca_ardea_alba.jpg' },
   { k: 'garza morena', n: 'Garza morena', s: 'Ardea cocoi', g: 'aves_locales', f: 'aves_residentes/garza_morena_ardea_cocoi.jpg' },
@@ -3252,7 +3179,6 @@ function buildMarkers() {
 
 /* --- panel ---------------------------------------------------------------- */
 function renderPanel(it) {
-  hideSpecies();
   const role = ROLES[it.id] || 'abiotico';
   const sps = speciesFor(it.id);
   elPanelScroll.innerHTML = `
@@ -3261,11 +3187,6 @@ function renderPanel(it) {
       <button class="p-close" aria-label="Cerrar la ficha">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
       </button>
-    </div>
-    <div class="sp-mobile-card" hidden aria-live="polite">
-      <img alt="" hidden>
-      <div class="sp-mobile-info"><b></b><em></em><span class="sp-mobile-note" hidden></span></div>
-      <button class="sp-mobile-close" type="button" aria-label="Cerrar ficha de la especie">×</button>
     </div>
     <h2 class="p-title" id="pTitle">${it.name}</h2>
     ${it.sci ? `<p class="p-sci">${it.sci}</p>` : ''}
@@ -3281,10 +3202,6 @@ function renderPanel(it) {
       <p class="sp-hint">Toca un nombre para ver su ficha.</p>` : ''}
   `;
   elPanelScroll.querySelector('.p-close').addEventListener('click', () => goOverview());
-  elPanelScroll.querySelector('.sp-mobile-close').addEventListener('click', () => {
-    elPanelScroll.querySelector('.sp-mobile-card').hidden = true;
-    requestAnimationFrame(updatePanelFade);
-  });
   elPanelScroll.scrollTop = 0;
   linkSpecies(elPanelScroll);
   bindSpeciesChips(elPanelScroll);
@@ -3295,8 +3212,7 @@ function linkSpecies(root) {
   const keys = Object.keys(SP_ALIAS).sort((a, b) => b.length - a.length);
   const re = new RegExp('(?<![\\p{L}])(' + keys.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')(?![\\p{L}])', 'giu');
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    // No volver a enlazar nombres que ya son fichas: evita botones anidados.
-    acceptNode: (n) => (n.parentElement && n.parentElement.closest('.p-title, .sp-name')) ? NodeFilter.FILTER_REJECT
+    acceptNode: (n) => (n.parentNode && n.parentNode.classList && n.parentNode.classList.contains('p-title')) ? NodeFilter.FILTER_REJECT
       : (n.nodeValue && n.nodeValue.trim().length > 2 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT)
   });
   const nodes = [];
@@ -3326,90 +3242,56 @@ function linkSpecies(root) {
 function bindSpeciesChips(root) {
   root.querySelectorAll('.sp-name[data-sp]').forEach((el) => {
     const key = el.dataset.sp;
-    const hasHover = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
-    el.setAttribute('role', 'button');
-    el.addEventListener('mouseenter', () => { if (hasHover()) showSpecies(el, key); });
-    el.addEventListener('mouseleave', () => { if (hasHover()) hideSpecies(); });
-    el.addEventListener('focus', () => { if (hasHover()) showSpecies(el, key); });
-    el.addEventListener('blur', () => { if (hasHover()) hideSpecies(); });
+    const show = () => showSpecies(el, key);
+    const hide = () => hideSpecies();
+    el.addEventListener('mouseenter', show);
+    el.addEventListener('mouseleave', hide);
+    el.addEventListener('focus', show);
+    el.addEventListener('blur', hide);
     el.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (hasHover()) {
-        showSpecies(el, key);
-        clearTimeout(showSpecies.timer);
-        showSpecies.timer = setTimeout(hideSpecies, 2600);
-      } else {
-        showMobileSpecies(key);
-      }
-    });
-    el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+      show();
+      clearTimeout(showSpecies.timer);
+      showSpecies.timer = setTimeout(hideSpecies, 2600);
     });
   });
 }
 
-// Cada fotografía se busca por su propia ruta: una imagen ausente no bloquea las demás.
-function showMobileSpecies(key) {
-  const sp = SPECIES_BY_KEY[key];
-  const card = elPanelScroll.querySelector('.sp-mobile-card');
-  if (!sp || !card) return;
-  hideSpecies();
-  const img = card.querySelector('img');
-  const note = card.querySelector('.sp-mobile-note');
-  card.querySelector('b').textContent = sp.n;
-  card.querySelector('em').textContent = sp.s;
-  note.hidden = true;
-  img.hidden = false;
-  img.alt = 'Fotografía de ' + sp.n;
-  img.onerror = () => { img.hidden = true; note.textContent = 'Fotografía no disponible.'; note.hidden = false; };
-  img.src = photoURL(sp);
-  card.hidden = false;
-  // El encabezado y la X permanecen por encima de la ficha, sin taparse.
-  elPanelScroll.scrollTop = 0;
-  requestAnimationFrame(updatePanelFade);
+let photosEnabled = null;      // null = sin probar · false/true tras la sonda
+function probePhotos() {
+  if (photosEnabled !== null) return Promise.resolve(photosEnabled);
+  return new Promise((res) => {
+    const img = new Image();
+    const done = (ok) => { photosEnabled = ok; res(ok); };
+    const timer = setTimeout(() => done(false), 2200);
+    img.onload = () => { clearTimeout(timer); done(true); };
+    img.onerror = () => { clearTimeout(timer); done(false); };
+    img.src = PHOTO_BASE + SPECIES[0].f;
+  });
 }
 
 function showSpecies(el, key) {
   const sp = SPECIES_BY_KEY[key];
   if (!sp) return;
-  elSpTip.replaceChildren();
-  const img = document.createElement('img');
-  img.alt = 'Fotografía de ' + sp.n;
-  img.onerror = () => { if (img.isConnected) { img.remove(); positionSpeciesTip(el); } };
-  img.onload = () => { if (img.isConnected) positionSpeciesTip(el); };
-  img.src = photoURL(sp);
-  const name = document.createElement('b'); name.textContent = sp.n;
-  const scientific = document.createElement('em'); scientific.textContent = sp.s;
-  elSpTip.append(img, name, scientific);
-  elSpTip.classList.add('on');
-  elSpTip.setAttribute('aria-hidden', 'false');
-  positionSpeciesTip(el);
-}
-
-function positionSpeciesTip(el) {
-  if (!elSpTip.classList.contains('on') || !el.isConnected) return;
   const r = el.getBoundingClientRect();
-  const width = elSpTip.offsetWidth || 216;
+  elSpTip.innerHTML = `<b>${sp.n}</b><em>${sp.s}</em>`;
+  elSpTip.classList.add('on');
+  const width = 216;
+  let left = r.left + r.width / 2 - width / 2;
+  left = clamp(left, 10, window.innerWidth - width - 10);
   const hgt = elSpTip.offsetHeight || 84;
-  let left = clamp(r.left + r.width / 2 - width / 2, 10, Math.max(10, window.innerWidth - width - 10));
   let top = r.top - hgt - 10;
   if (top < 10) top = r.bottom + 10;
-  top = clamp(top, 10, Math.max(10, window.innerHeight - hgt - 10));
-  const close = elPanelScroll.querySelector('.p-close');
-  if (close) {
-    const c = close.getBoundingClientRect();
-    if (left < c.right + 8 && left + width > c.left - 8 && top < c.bottom + 8 && top + hgt > c.top - 8) {
-      // Dar prioridad absoluta a la X incluso si la fotografía aparece después.
-      left = Math.max(10, c.left - width - 12);
-      if (left + width > c.left - 8) top = Math.min(window.innerHeight - hgt - 10, c.bottom + 12);
-    }
-  }
   elSpTip.style.left = left + 'px';
-  elSpTip.style.top = Math.max(10, top) + 'px';
+  elSpTip.style.top = top + 'px';
+  elSpTip.setAttribute('aria-hidden', 'false');
+  probePhotos().then((ok) => {
+    if (!ok || !elSpTip.classList.contains('on')) return;
+    elSpTip.innerHTML = `<img alt="${sp.n}" src="${PHOTO_BASE}${sp.f}"><b>${sp.n}</b><em>${sp.s}</em>`;
+  });
 }
 
 function hideSpecies() {
-  clearTimeout(showSpecies.timer);
   elSpTip.classList.remove('on');
   elSpTip.setAttribute('aria-hidden', 'true');
 }
@@ -3427,10 +3309,6 @@ function openPanel() {
 }
 
 function closePanel() {
-  hideSpecies();
-  elPanel.classList.remove('expanded');
-  $('panelSize').setAttribute('aria-expanded', 'false');
-  $('panelSize').querySelector('.panel-size-label').textContent = 'Ampliar ficha';
   panelOpen = false;
   elPanel.classList.remove('open');
   elPanel.setAttribute('aria-hidden', 'true');
@@ -3647,8 +3525,7 @@ function updateMarkers(t, HF) {
 
     if (state.current >= 0 && m.it.idx !== state.current) {
       const cur = ALL[state.current];
-      // Al explorar el corte, conserva las esferas de todas las capas.
-      if (cur.face && !m.it.layer) { setMarker(m, false); return; }
+      if (cur.face) { setMarker(m, false); return; }
     }
     if (m.it.idx !== state.current) {
       if (doOccl) occlCache[m.it.idx] = occluded(HF, p[0], p[1], p[2]);
@@ -3781,8 +3658,6 @@ function panBy(dx, dy) {
 
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 canvas.addEventListener('pointerdown', (e) => {
-  // Capturar también el segundo dedo mantiene estable la pinza del diorama.
-  if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 2) {
     const [a, b] = [...pointers.values()];
@@ -3797,6 +3672,7 @@ canvas.addEventListener('pointerdown', (e) => {
   state.lastX = e.clientX; state.lastY = e.clientY;
   state.velTheta = 0; state.velPhi = 0;
   canvas.classList.add('dragging');
+  if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
   const sel = window.getSelection && window.getSelection();
   if (sel) sel.removeAllRanges();
 });
@@ -3883,10 +3759,7 @@ function handleWheel(e) {
   zoomAt(e.clientX, e.clientY, d);
 }
 window.addEventListener('wheel', handleWheel, { passive: false });
-// Safari: bloquear el zoom de página sin interferir con la pinza del canvas.
-['gesturestart', 'gesturechange', 'gestureend'].forEach((name) => {
-  window.addEventListener(name, (e) => e.preventDefault(), { passive: false });
-});
+window.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
 
 /* ======================================================== 19. BUCLE */
 
@@ -4201,15 +4074,6 @@ function boot() {
     $('dockNext').addEventListener('click', () => scrollDock(1));
     elDock.addEventListener('scroll', updateDockNav, { passive: true });
     elPanelScroll.addEventListener('scroll', updatePanelFade, { passive: true });
-    $('panelSize').addEventListener('click', () => {
-      const expanded = elPanel.classList.toggle('expanded');
-      $('panelSize').setAttribute('aria-expanded', String(expanded));
-      $('panelSize').querySelector('.panel-size-label').textContent = expanded ? 'Reducir ficha' : 'Ampliar ficha';
-      requestAnimationFrame(() => { measureSafe(); applyLensShift(); updatePanelFade(); });
-    });
-    document.querySelectorAll('.tools .btn[title]').forEach((button) => {
-      button.setAttribute('aria-label', button.title.replace(/ \([^)]+\)$/, ''));
-    });
     window.addEventListener('keydown', onKey);
     window.addEventListener('resize', () => {
       resize();
@@ -4276,5 +4140,5 @@ boot();
 
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5812708dfaaad9e',t:'MTc5NDI3Mjc2NA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5812708dfaaad9e',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
