@@ -189,6 +189,20 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .sp-tip em{display:block;font-style:italic;font-size:10px;color:rgba(168,217,126,.88)}
 .sp-tip .sp-tip-note{display:block;margin-top:6px;font-size:10px;line-height:1.4;color:rgba(247,240,229,.55)}
 
+/* Ficha táctil en el flujo del panel: jamás se superpone al botón de cierre. */
+.sp-mobile-card[hidden],.sp-mobile-card [hidden]{display:none !important}
+.sp-mobile-card{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:10px;
+  border:1px solid rgba(127,240,212,.3);border-radius:14px;background:#0b2928}
+.sp-mobile-card img{width:104px;height:92px;flex:none;object-fit:cover;border-radius:9px;background:#102f2e}
+.sp-mobile-card .sp-mobile-info{flex:1;min-width:0}
+.sp-mobile-card b,.sp-mobile-card em{display:block;overflow-wrap:anywhere}
+.sp-mobile-card b{font-size:14px;line-height:1.3;margin-bottom:4px}
+.sp-mobile-card em{font-size:12px;line-height:1.35;color:#c5e4a8}
+.sp-mobile-card .sp-mobile-note{display:block;margin-top:5px;font-size:11px;line-height:1.35;color:rgba(247,240,229,.75)}
+.sp-mobile-card .sp-mobile-close{align-self:flex-start;flex:none;min-width:40px;min-height:40px;
+  border:1px solid rgba(255,255,255,.18);border-radius:50%;font-size:20px;line-height:1}
+
+
 /* barra de partes --------------------------------------------------------- */
 .dock-wrap{position:fixed;z-index:7;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));
   transform:translateX(-50%);display:flex;align-items:center;gap:6px;
@@ -3235,6 +3249,7 @@ function buildMarkers() {
 
 /* --- panel ---------------------------------------------------------------- */
 function renderPanel(it) {
+  hideSpecies();
   const role = ROLES[it.id] || 'abiotico';
   const sps = speciesFor(it.id);
   elPanelScroll.innerHTML = `
@@ -3243,6 +3258,11 @@ function renderPanel(it) {
       <button class="p-close" aria-label="Cerrar la ficha">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
       </button>
+    </div>
+    <div class="sp-mobile-card" hidden aria-live="polite">
+      <img alt="" hidden>
+      <div class="sp-mobile-info"><b></b><em></em><span class="sp-mobile-note" hidden></span></div>
+      <button class="sp-mobile-close" type="button" aria-label="Cerrar ficha de la especie">×</button>
     </div>
     <h2 class="p-title" id="pTitle">${it.name}</h2>
     ${it.sci ? `<p class="p-sci">${it.sci}</p>` : ''}
@@ -3258,6 +3278,10 @@ function renderPanel(it) {
       <p class="sp-hint">Toca un nombre para ver su ficha.</p>` : ''}
   `;
   elPanelScroll.querySelector('.p-close').addEventListener('click', () => goOverview());
+  elPanelScroll.querySelector('.sp-mobile-close').addEventListener('click', () => {
+    elPanelScroll.querySelector('.sp-mobile-card').hidden = true;
+    requestAnimationFrame(updatePanelFade);
+  });
   elPanelScroll.scrollTop = 0;
   linkSpecies(elPanelScroll);
   bindSpeciesChips(elPanelScroll);
@@ -3299,57 +3323,90 @@ function linkSpecies(root) {
 function bindSpeciesChips(root) {
   root.querySelectorAll('.sp-name[data-sp]').forEach((el) => {
     const key = el.dataset.sp;
-    const show = () => showSpecies(el, key);
-    const hide = () => hideSpecies();
-    el.addEventListener('mouseenter', show);
-    el.addEventListener('mouseleave', hide);
-    el.addEventListener('focus', show);
-    el.addEventListener('blur', hide);
+    const hasHover = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
+    el.setAttribute('role', 'button');
+    el.addEventListener('mouseenter', () => { if (hasHover()) showSpecies(el, key); });
+    el.addEventListener('mouseleave', () => { if (hasHover()) hideSpecies(); });
+    el.addEventListener('focus', () => { if (hasHover()) showSpecies(el, key); });
+    el.addEventListener('blur', () => { if (hasHover()) hideSpecies(); });
     el.addEventListener('click', (e) => {
       e.stopPropagation();
-      show();
-      clearTimeout(showSpecies.timer);
-      showSpecies.timer = setTimeout(hideSpecies, 2600);
+      if (hasHover()) {
+        showSpecies(el, key);
+        clearTimeout(showSpecies.timer);
+        showSpecies.timer = setTimeout(hideSpecies, 2600);
+      } else {
+        showMobileSpecies(key);
+      }
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
     });
   });
 }
 
-let photosEnabled = null;      // null = sin probar · false/true tras la sonda
-function probePhotos() {
-  if (photosEnabled !== null) return Promise.resolve(photosEnabled);
-  return new Promise((res) => {
-    const img = new Image();
-    const done = (ok) => { photosEnabled = ok; res(ok); };
-    const timer = setTimeout(() => done(false), 2200);
-    img.onload = () => { clearTimeout(timer); done(true); };
-    img.onerror = () => { clearTimeout(timer); done(false); };
-    img.src = PHOTO_BASE + SPECIES[0].f;
-  });
+// Cada fotografía se busca por su propia ruta: una imagen ausente no bloquea las demás.
+function showMobileSpecies(key) {
+  const sp = SPECIES_BY_KEY[key];
+  const card = elPanelScroll.querySelector('.sp-mobile-card');
+  if (!sp || !card) return;
+  hideSpecies();
+  const img = card.querySelector('img');
+  const note = card.querySelector('.sp-mobile-note');
+  card.querySelector('b').textContent = sp.n;
+  card.querySelector('em').textContent = sp.s;
+  note.hidden = true;
+  img.hidden = false;
+  img.alt = 'Fotografía de ' + sp.n;
+  img.onerror = () => { img.hidden = true; note.textContent = 'Fotografía no disponible.'; note.hidden = false; };
+  img.src = PHOTO_BASE + sp.f;
+  card.hidden = false;
+  // El encabezado y la X permanecen por encima de la ficha, sin taparse.
+  elPanelScroll.scrollTop = 0;
+  requestAnimationFrame(updatePanelFade);
 }
 
 function showSpecies(el, key) {
   const sp = SPECIES_BY_KEY[key];
   if (!sp) return;
-  const r = el.getBoundingClientRect();
-  elSpTip.innerHTML = `<b>${sp.n}</b><em>${sp.s}</em>`;
+  elSpTip.replaceChildren();
+  const img = document.createElement('img');
+  img.alt = 'Fotografía de ' + sp.n;
+  img.onerror = () => { if (img.isConnected) { img.remove(); positionSpeciesTip(el); } };
+  img.onload = () => { if (img.isConnected) positionSpeciesTip(el); };
+  img.src = PHOTO_BASE + sp.f;
+  const name = document.createElement('b'); name.textContent = sp.n;
+  const scientific = document.createElement('em'); scientific.textContent = sp.s;
+  elSpTip.append(img, name, scientific);
   elSpTip.classList.add('on');
-  const width = 216;
-  let left = r.left + r.width / 2 - width / 2;
-  left = clamp(left, 10, window.innerWidth - width - 10);
+  elSpTip.setAttribute('aria-hidden', 'false');
+  positionSpeciesTip(el);
+}
+
+function positionSpeciesTip(el) {
+  if (!elSpTip.classList.contains('on') || !el.isConnected) return;
+  const r = el.getBoundingClientRect();
+  const width = elSpTip.offsetWidth || 216;
   const hgt = elSpTip.offsetHeight || 84;
+  let left = clamp(r.left + r.width / 2 - width / 2, 10, Math.max(10, window.innerWidth - width - 10));
   let top = r.top - hgt - 10;
   if (top < 10) top = r.bottom + 10;
   top = clamp(top, 10, Math.max(10, window.innerHeight - hgt - 10));
+  const close = elPanelScroll.querySelector('.p-close');
+  if (close) {
+    const c = close.getBoundingClientRect();
+    if (left < c.right + 8 && left + width > c.left - 8 && top < c.bottom + 8 && top + hgt > c.top - 8) {
+      // Dar prioridad absoluta a la X incluso si la fotografía aparece después.
+      left = Math.max(10, c.left - width - 12);
+      if (left + width > c.left - 8) top = Math.min(window.innerHeight - hgt - 10, c.bottom + 12);
+    }
+  }
   elSpTip.style.left = left + 'px';
-  elSpTip.style.top = top + 'px';
-  elSpTip.setAttribute('aria-hidden', 'false');
-  probePhotos().then((ok) => {
-    if (!ok || !elSpTip.classList.contains('on')) return;
-    elSpTip.innerHTML = `<img alt="${sp.n}" src="${PHOTO_BASE}${sp.f}"><b>${sp.n}</b><em>${sp.s}</em>`;
-  });
+  elSpTip.style.top = Math.max(10, top) + 'px';
 }
 
 function hideSpecies() {
+  clearTimeout(showSpecies.timer);
   elSpTip.classList.remove('on');
   elSpTip.setAttribute('aria-hidden', 'true');
 }
@@ -3367,6 +3424,7 @@ function openPanel() {
 }
 
 function closePanel() {
+  hideSpecies();
   elPanel.classList.remove('expanded');
   $('panelSize').setAttribute('aria-expanded', 'false');
   $('panelSize').querySelector('.panel-size-label').textContent = 'Ampliar ficha';
@@ -4215,5 +4273,5 @@ boot();
 
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a58107213f2bd67b',t:'MTc5NDI3MTQ1Nw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a58107213f2bd67b',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5811c6a4ca9d1bc',t:'MTc5NDI3MjMyOQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5811c6a4ca9d1bc',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
