@@ -3111,9 +3111,12 @@ const ROLE_LABEL = {
   abiotico: 'Componente físico', productor: 'Productor', descomponedor: 'Descomponedor', consumidor: 'Consumidor'
 };
 
-/* Catálogo de especies. Si existe la carpeta local `humedal_especies/`, cada
-   ficha muestra su fotografía; si no, se ofrece la ficha científica. */
-const PHOTO_BASE = 'humedal_especies/';
+/* Las fotografías del repositorio están en la raíz de GitHub Pages,
+   junto al index. La URL absoluta también funciona al abrir el HTML descargado. */
+const PHOTO_BASE = 'https://sig-ecosocialismo-sb.github.io/bot-reportes-whatsapp/';
+function photoURL(sp) {
+  return PHOTO_BASE + encodeURIComponent(sp.f.split('/').pop());
+}
 const SPECIES = [
   { k: 'garza blanca', n: 'Garza blanca', s: 'Ardea alba', g: 'aves_locales', f: 'ave_residentes/garza_blanca_ardea_alba.jpg' },
   { k: 'garza morena', n: 'Garza morena', s: 'Ardea cocoi', g: 'aves_locales', f: 'aves_residentes/garza_morena_ardea_cocoi.jpg' },
@@ -3359,7 +3362,7 @@ function showMobileSpecies(key) {
   img.hidden = false;
   img.alt = 'Fotografía de ' + sp.n;
   img.onerror = () => { img.hidden = true; note.textContent = 'Fotografía no disponible.'; note.hidden = false; };
-  img.src = PHOTO_BASE + sp.f;
+  img.src = photoURL(sp);
   card.hidden = false;
   // El encabezado y la X permanecen por encima de la ficha, sin taparse.
   elPanelScroll.scrollTop = 0;
@@ -3374,7 +3377,7 @@ function showSpecies(el, key) {
   img.alt = 'Fotografía de ' + sp.n;
   img.onerror = () => { if (img.isConnected) { img.remove(); positionSpeciesTip(el); } };
   img.onload = () => { if (img.isConnected) positionSpeciesTip(el); };
-  img.src = PHOTO_BASE + sp.f;
+  img.src = photoURL(sp);
   const name = document.createElement('b'); name.textContent = sp.n;
   const scientific = document.createElement('em'); scientific.textContent = sp.s;
   elSpTip.append(img, name, scientific);
@@ -4273,5 +4276,5 @@ boot();
 
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5811c6a4ca9d1bc',t:'MTc5NDI3MjMyOQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5811c6a4ca9d1bc',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5812708dfaaad9e',t:'MTc5NDI3Mjc2NA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5812708dfaaad9e',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
