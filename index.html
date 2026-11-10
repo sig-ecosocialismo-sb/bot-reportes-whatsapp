@@ -3165,10 +3165,19 @@ const SPECIES = [
 const SPECIES_BY_KEY = {};
 SPECIES.forEach((sp) => { if (!SPECIES_BY_KEY[sp.k]) SPECIES_BY_KEY[sp.k] = sp; });
 
-/* alias para enlazar el texto: nombre común + nombre científico (binomio) */
+/* Alias de los nombres comunes, sus plurales y el nombre científico. */
 const SP_ALIAS = {};
+function pluralSpeciesWord(word) {
+  if (word.endsWith('z')) return word.slice(0, -1) + 'ces';
+  return word + (/[aeiouáéíóú]$/i.test(word) ? 's' : 'es');
+}
 SPECIES.forEach((sp) => {
   SP_ALIAS[sp.k] = sp.k;
+  const words = sp.k.split(' ');
+  words[0] = pluralSpeciesWord(words[0]);
+  // En los nombres con «de», solo se pluraliza el sustantivo principal.
+  if (words.length === 2 && words[1] !== 'de') words[1] = pluralSpeciesWord(words[1]);
+  SP_ALIAS[words.join(' ')] = sp.k;
   const bin = String(sp.s || '').replace(/\s+(sp\.|spp\.).*$/i, '').trim();
   if (bin.split(/\s+/).length >= 2) SP_ALIAS[bin.toLowerCase()] = sp.k;
 });
@@ -3302,7 +3311,6 @@ function linkSpecies(root) {
   });
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
-  const done = new Set();
   nodes.forEach((node) => {
     const text = node.nodeValue;
     if (!re.test(text)) return;
@@ -3310,8 +3318,7 @@ function linkSpecies(root) {
     let html = '', last = 0, m;
     while ((m = re.exec(text))) {
       const key = SP_ALIAS[m[1].toLowerCase()];
-      if (!key || done.has(key)) continue;
-      done.add(key);
+      if (!key) continue;
       html += text.slice(last, m.index) +
         `<span class="sp-name" tabindex="0" data-sp="${key}">${m[1]}</span>`;
       last = m.index + m[0].length;
@@ -4277,5 +4284,5 @@ boot();
 
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a58138615a68396d',t:'MTc5NDI3MzQ3NA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a58138615a68396d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5814768abf42f89',t:'MTc5NDI3NDA5MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5814768abf42f89',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
