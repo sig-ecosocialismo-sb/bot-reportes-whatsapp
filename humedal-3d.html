@@ -3051,9 +3051,10 @@ function goOverview(dur, keepRotate) {
   state.touring = keepRotate === 'keep' ? state.touring : false;
   closePanel();
   measureSafe(); applyLensShift();
-  const theta = 0.60, phi = 1.08;
-  const f = fitView(FIT_PTS, theta, phi, FIT_TARGET, 1.0);
-  const air = 1.0;
+  /* Vista por defecto más cercana y centrada (menos lejos / menos arriba) */
+  const theta = 0.58, phi = 1.14;
+  const f = fitView(FIT_PTS, theta, phi, FIT_TARGET, 0.90);
+  const air = 0.72;
   state.dTarget.copy(f.target); state.dRadius = f.d * air;
   state.dTheta = theta; state.dPhi = phi;
   orbitTo(f.pos, f.target, dur || 1.5);
@@ -4186,7 +4187,8 @@ function boot() {
     S = built;
     HF = buildHeightField(S);
     FIT_PTS = makeFitPoints(S);
-    FIT_TARGET.set(0, -1.55, 0);
+    /* Punto de mira un poco más bajo para centrar el diorama en pantalla */
+    FIT_TARGET.set(0, -1.25, 0);
 
     /* lo que se anima no puede fusionarse */
     scene.userData.keep = S.fishGroups.map((f) => f.grp).concat(S.birds.map((b) => b.g));
@@ -4237,9 +4239,9 @@ function boot() {
     window.addEventListener('resize', () => {
       resize();
       if (state.current < 0 && !tween.on && !state.section) {
-        const f = fitView(FIT_PTS, state.dTheta, state.dPhi, FIT_TARGET, 1.0);
+        const f = fitView(FIT_PTS, state.dTheta, state.dPhi, FIT_TARGET, 0.90);
         state.dTarget.copy(f.target);
-        state.dRadius = f.d;
+        state.dRadius = f.d * 0.72;
       }
     });
     if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(document.body);
@@ -4251,9 +4253,10 @@ function boot() {
     if (startIdx >= 0) {
       select(startIdx, false);
     } else {
-      const theta = 0.60, phi = 1.08;
-      const f = fitView(FIT_PTS, theta, phi, FIT_TARGET, 1.0);
-      const air = 1.0;
+      /* Vista inicial más cercana y centrada en el diorama */
+      const theta = 0.58, phi = 1.14;
+      const f = fitView(FIT_PTS, theta, phi, FIT_TARGET, 0.90);
+      const air = 0.72;
       state.theta = state.dTheta = theta;
       state.phi = state.dPhi = phi;
       state.target.copy(f.target); state.dTarget.copy(f.target);
